@@ -1,6 +1,6 @@
 name: circular_theme_reveal
 description: A beautiful Telegram-style circular reveal animation for theme transitions in Flutter. Smooth, performant, and zero dependencies.
-version: 1.0.0
+version: 1.0.1
 homepage: https://github.com/MarcosPereira1/flutter_telegram_theme
 repository: https://github.com/MarcosPereira1/flutter_telegram_theme
 issue_tracker: https://github.com/MarcosPereira1/flutter_telegram_theme/issues

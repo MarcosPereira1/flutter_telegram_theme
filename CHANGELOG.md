@@ -1,3 +1,11 @@
+## 1.0.1
+
+**Documentation Update**
+
+* ✨ Added animated GIF demo to README
+* 📝 Improved README with visual demonstration
+* 🎨 Enhanced pub.dev presentation
+
 ## 1.0.0
 
 **Initial Release** 🎉
