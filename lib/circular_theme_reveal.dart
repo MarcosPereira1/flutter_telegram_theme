@@ -48,6 +48,6 @@
 ///   },
 /// )
 /// ```
-library circular_theme_reveal;
+library;
 
 export 'src/circular_theme_reveal_overlay.dart';

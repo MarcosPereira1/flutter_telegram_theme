@@ -4,7 +4,7 @@
 
 **A beautiful Telegram-style circular reveal animation for theme transitions in Flutter**
 
-![Telegram-style theme animation demo](https://github.com/user-attachments/assets/0a1136ee-1d1f-4ee4-ba8d-8ef9cb41b618)
+![Telegram-style theme animation demo](https://raw.githubusercontent.com/MarcosPereira1/flutter_telegram_theme/main/darkmode.gif)
 
 [![pub package](https://img.shields.io/pub/v/circular_theme_reveal.svg)](https://pub.dev/packages/circular_theme_reveal)
 [![style: flutter_lints](https://img.shields.io/badge/style-flutter__lints-blue)](https://pub.dev/packages/flutter_lints)
@@ -32,7 +32,7 @@ Add this to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  circular_theme_reveal: ^1.0.0
+  circular_theme_reveal:
 ```
 
 Or install it from the command line:

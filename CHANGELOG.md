@@ -1,3 +1,11 @@
+## 1.0.2
+
+**Documentation Improvements**
+
+* 📦 Changed GIF URL to use repository file for better reliability
+* 📝 Updated installation instructions to use version-agnostic syntax
+* 🎨 Improved README clarity
+
 ## 1.0.1
 
 **Documentation Update**
