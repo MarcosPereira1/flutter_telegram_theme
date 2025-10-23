@@ -2,7 +2,7 @@
 
 A beautiful Telegram-style circular reveal animation for theme transitions in Flutter.
 
-![Demo](https://via.placeholder.com/600x400/1a1a1a/ffffff?text=Add+Your+Demo+GIF+Here)
+https://github.com/user-attachments/assets/b158ea91-6afc-42bf-aed8-24e4e4f00902
 
 ## Features ✨
 
@@ -159,5 +159,5 @@ Inspired by Telegram's beautiful theme transition animation.
 
 ## Author
 
-Created with ❤️ by [Your Name]
+Created with ❤️ by [marcospereira](https://github.com/MarcosPereira1)
 
