@@ -1,4 +1,5 @@
 import 'dart:ui' as ui;
+import 'dart:math' as math;
 import 'package:flutter/material.dart';
 
 class CircularRevealPainter extends CustomPainter {
@@ -19,9 +20,15 @@ class CircularRevealPainter extends CustomPainter {
     final double maxRadius = _calculateMaxRadius(center, size);
     final double currentRadius = isReverse ? maxRadius * (1.0 - progress) : maxRadius * progress;
 
+    // Fade progressivo baseado no RAIO, não no tempo - mais natural
     double opacity = 1.0;
-    if (isReverse && progress > 0.85) {
-      opacity = 1.0 - ((progress - 0.85) / 0.15);
+    if (isReverse) {
+      final double fadeThreshold = maxRadius * 0.15; // Últimos 15% do raio
+      if (currentRadius < fadeThreshold) {
+        // Usar curva de potência para fade mais suave
+        opacity = math.pow(currentRadius / fadeThreshold, 0.7).toDouble();
+        opacity = opacity.clamp(0.0, 1.0);
+      }
     }
 
     final Paint layerPaint = Paint()..color = Color.fromRGBO(255, 255, 255, opacity);
@@ -35,6 +42,16 @@ class CircularRevealPainter extends CustomPainter {
       ..style = PaintingStyle.fill;
 
     canvas.drawCircle(center, currentRadius, clearPaint);
+
+    // Efeito sutil de dissipação/glow nos últimos 10% do raio
+    if (isReverse && currentRadius < maxRadius * 0.10) {
+      final double glowIntensity = 1.0 - (currentRadius / (maxRadius * 0.10));
+      final Paint glowPaint = Paint()
+        ..color = Colors.white.withOpacity(glowIntensity * 0.25)
+        ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 10.0);
+
+      canvas.drawCircle(center, currentRadius + 12, glowPaint);
+    }
 
     canvas.restore();
   }
@@ -53,4 +70,3 @@ class CircularRevealPainter extends CustomPainter {
     return oldDelegate.progress != progress;
   }
 }
-

@@ -31,7 +31,12 @@ class CircularThemeRevealOverlayState extends State<CircularThemeRevealOverlay> 
   void initState() {
     super.initState();
     _controller = AnimationController(duration: const Duration(milliseconds: 600), vsync: this);
-    _animation = CurvedAnimation(parent: _controller, curve: Curves.easeInOut);
+    // Usar curva diferente para expansão vs contração
+    _animation = CurvedAnimation(
+      parent: _controller,
+      curve: Curves.easeInOut,
+      reverseCurve: Curves.easeInExpo, // Contração mais cinematográfica
+    );
   }
 
   @override
@@ -68,6 +73,11 @@ class CircularThemeRevealOverlayState extends State<CircularThemeRevealOverlay> 
     await Future.delayed(const Duration(milliseconds: 20));
 
     await _controller.forward(from: 0.0);
+
+    // Pequeno delay para garantir que fade e glow terminem antes de remover
+    if (_isReverse) {
+      await Future.delayed(const Duration(milliseconds: 16));
+    }
 
     if (mounted) {
       setState(() {
@@ -129,4 +139,3 @@ class CircularThemeRevealOverlayState extends State<CircularThemeRevealOverlay> 
     );
   }
 }
-
