@@ -1,8 +1,22 @@
+<div align="center">
+
 # Circular Theme Reveal 🎨
 
-A beautiful Telegram-style circular reveal animation for theme transitions in Flutter.
+**A beautiful Telegram-style circular reveal animation for theme transitions in Flutter**
+
+[![style: flutter_lints](https://img.shields.io/badge/style-flutter__lints-blue)](https://pub.dev/packages/flutter_lints)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![GitHub stars](https://img.shields.io/github/stars/MarcosPereira1/flutter_telegram_theme?style=social)](https://github.com/MarcosPereira1/flutter_telegram_theme)
+
+---
 
 https://github.com/user-attachments/assets/b158ea91-6afc-42bf-aed8-24e4e4f00902
+
+**✨ Smooth • 🔄 Bidirectional • ⚡ Performant • 🎯 Zero Dependencies**
+
+</div>
+
+---
 
 ## Features ✨
 
