@@ -139,27 +139,21 @@ class ThemeToggleButton extends StatelessWidget {
         ),
       ),
       onPressed: () async {
-        final RenderBox? box = context.findRenderObject() as RenderBox?;
-        if (box != null) {
-          final Offset position = box.localToGlobal(Offset.zero);
-          final Size size = box.size;
-          final Offset center = Offset(
-            position.dx + size.width / 2,
-            position.dy + size.height / 2,
+        // Get the center position of the button
+        final Offset center = CircularThemeRevealOverlay.getCenterFromContext(context);
+
+        // Get the overlay state
+        final CircularThemeRevealOverlayState? overlay = CircularThemeRevealOverlay.of(context);
+
+        if (overlay != null) {
+          // Start the circular reveal transition
+          await overlay.startTransition(
+            center: center,
+            reverse: isDark, // true when going dark→light
+            onThemeChange: onToggle,
           );
-
-          final CircularThemeRevealOverlayState? overlay = CircularThemeRevealOverlay.of(context);
-
-          if (overlay != null) {
-            await overlay.startTransition(
-              center: center,
-              reverse: isDark,
-              onThemeChange: onToggle,
-            );
-          } else {
-            onToggle();
-          }
         } else {
+          // Fallback if overlay is not found
           onToggle();
         }
       },

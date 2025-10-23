@@ -4,13 +4,62 @@ import 'package:flutter/rendering.dart';
 
 import 'circular_reveal_painter.dart';
 
+/// A widget that provides a circular reveal animation for theme transitions.
+///
+/// Wrap your [MaterialApp] or root widget with this to enable smooth,
+/// Telegram-style circular animations when switching between themes.
+///
+/// Example:
+/// ```dart
+/// MaterialApp(
+///   theme: ThemeData.light(),
+///   darkTheme: ThemeData.dark(),
+///   builder: (context, child) {
+///     return CircularThemeRevealOverlay(
+///       child: child ?? SizedBox.shrink(),
+///     );
+///   },
+/// )
+/// ```
 class CircularThemeRevealOverlay extends StatefulWidget {
+  /// Creates a circular theme reveal overlay.
+  ///
+  /// The [child] is typically your [MaterialApp] or root widget.
   const CircularThemeRevealOverlay({required this.child, super.key});
 
+  /// The widget below this widget in the tree.
   final Widget child;
 
+  /// Returns the [CircularThemeRevealOverlayState] from the closest instance
+  /// of this class that encloses the given context.
+  ///
+  /// Use this to trigger theme transitions:
+  /// ```dart
+  /// final overlay = CircularThemeRevealOverlay.of(context);
+  /// await overlay?.startTransition(...);
+  /// ```
   static CircularThemeRevealOverlayState? of(BuildContext context) {
     return context.findAncestorStateOfType<CircularThemeRevealOverlayState>();
+  }
+
+  /// Helper method to get the center position of a widget from its [BuildContext].
+  ///
+  /// Useful for getting the position of your theme toggle button:
+  /// ```dart
+  /// final center = CircularThemeRevealOverlay.getCenterFromContext(context);
+  /// await overlay.startTransition(center: center, ...);
+  /// ```
+  static Offset getCenterFromContext(BuildContext context) {
+    final RenderBox? box = context.findRenderObject() as RenderBox?;
+    if (box == null) return Offset.zero;
+
+    final Offset position = box.localToGlobal(Offset.zero);
+    final Size size = box.size;
+
+    return Offset(
+      position.dx + size.width / 2,
+      position.dy + size.height / 2,
+    );
   }
 
   @override
@@ -46,6 +95,34 @@ class CircularThemeRevealOverlayState extends State<CircularThemeRevealOverlay> 
     super.dispose();
   }
 
+  /// Starts a circular reveal transition animation.
+  ///
+  /// This method captures a snapshot of the current screen, applies the theme
+  /// change via [onThemeChange], and animates a circular reveal effect.
+  ///
+  /// Parameters:
+  /// - [center]: The center point of the circular animation (typically the
+  ///   position of your theme toggle button).
+  /// - [reverse]: If true, the circle contracts (for dark→light transition).
+  ///   If false, the circle expands (for light→dark transition).
+  /// - [onThemeChange]: Callback to actually change your theme. This is called
+  ///   after the snapshot is captured but before the animation starts.
+  ///
+  /// Example:
+  /// ```dart
+  /// final overlay = CircularThemeRevealOverlay.of(context);
+  /// final center = CircularThemeRevealOverlay.getCenterFromContext(context);
+  ///
+  /// await overlay?.startTransition(
+  ///   center: center,
+  ///   reverse: isDarkMode, // true when going dark→light
+  ///   onThemeChange: () {
+  ///     setState(() {
+  ///       isDarkMode = !isDarkMode;
+  ///     });
+  ///   },
+  /// );
+  /// ```
   Future<void> startTransition({
     required Offset center,
     required VoidCallback onThemeChange,

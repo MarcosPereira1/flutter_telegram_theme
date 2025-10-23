@@ -1,4 +1,4 @@
-<div align="center">
+r<div align="center">
 
 # Circular Theme Reveal 🎨
 
@@ -51,19 +51,37 @@ Wrap your `MaterialApp` (or the root widget) with `CircularThemeRevealOverlay`:
 ```dart
 import 'package:circular_theme_reveal/circular_theme_reveal.dart';
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  ThemeMode _themeMode = ThemeMode.light;
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      title: 'Circular Theme Reveal Demo',
       theme: ThemeData.light(),
       darkTheme: ThemeData.dark(),
-      themeMode: _currentThemeMode, // Your theme mode state
+      themeMode: _themeMode,
+      themeAnimationDuration: Duration.zero, // Disable default animation
       builder: (context, child) {
         return CircularThemeRevealOverlay(
           child: child ?? SizedBox.shrink(),
         );
       },
-      home: HomePage(),
+      home: HomePage(
+        onThemeToggle: () {
+          setState(() {
+            _themeMode = _themeMode == ThemeMode.light 
+                ? ThemeMode.dark 
+                : ThemeMode.light;
+          });
+        },
+        isDark: _themeMode == ThemeMode.dark,
+      ),
     );
   }
 }
@@ -71,26 +89,20 @@ class MyApp extends StatelessWidget {
 
 ### 2. Trigger the animation
 
-In your theme toggle button:
+In your theme toggle button (simplified with helper method):
 
 ```dart
 IconButton(
   icon: Icon(isDark ? Icons.light_mode : Icons.dark_mode),
   onPressed: () async {
-    // Get button position
-    final RenderBox box = context.findRenderObject() as RenderBox;
-    final Offset position = box.localToGlobal(Offset.zero);
-    final Size size = box.size;
-    final Offset center = Offset(
-      position.dx + size.width / 2,
-      position.dy + size.height / 2,
-    );
-
-    // Get overlay
+    // Get button center position using helper
+    final center = CircularThemeRevealOverlay.getCenterFromContext(context);
+    
+    // Get overlay state
     final overlay = CircularThemeRevealOverlay.of(context);
 
     if (overlay != null) {
-      // Start animation
+      // Start circular reveal animation
       await overlay.startTransition(
         center: center,
         reverse: isDark, // true when going from dark to light
@@ -111,6 +123,31 @@ IconButton(
 )
 ```
 
+### Works with Any State Management
+
+The package is agnostic to your state management solution. Works with:
+
+#### Provider / Riverpod
+```dart
+onThemeChange: () {
+  ref.read(themeProvider.notifier).toggle();
+}
+```
+
+#### Bloc
+```dart
+onThemeChange: () {
+  context.read<ThemeBloc>().add(ToggleTheme());
+}
+```
+
+#### GetX
+```dart
+onThemeChange: () {
+  Get.find<ThemeController>().toggleTheme();
+}
+```
+
 ## Complete Example
 
 See the `/example` folder for a complete working example with:
@@ -123,23 +160,51 @@ See the `/example` folder for a complete working example with:
 
 The animation uses a clever technique inspired by Telegram:
 
-1. **Captures a snapshot** of the current screen
-2. **Overlays the snapshot** on top
-3. **Changes the theme** underneath (user doesn't see it yet)
-4. **Animates a circular mask** that reveals the new theme
-5. **Fades out gracefully** to prevent visual glitches
+1. **Captures a snapshot** of the current screen using `RepaintBoundary`
+2. **Overlays the snapshot** on top of your app
+3. **Changes the theme** underneath via your `onThemeChange` callback
+4. **Animates a circular mask** using `BlendMode.dstOut` that reveals the new theme
+5. **Fades out gracefully** at the end with progressive opacity + glow effect
 
-The animation direction reverses automatically:
-- 🌞 → 🌙 **Expands** from the button
-- 🌙 → 🌞 **Contracts** back to the button
+The animation direction adapts automatically:
+- 🌞 → 🌙 **Expands** from the button (circle grows, revealing dark theme)
+- 🌙 → 🌞 **Contracts** back to the button (circle shrinks, revealing light theme)
+
+The contraction uses special techniques to eliminate visual glitches:
+- Fade based on actual radius (not time) for natural dissipation
+- Subtle glow effect in the final 10% for smooth termination
+- `easeInExpo` curve for cinematic acceleration
+- Precise timing to remove overlay only when fully invisible
 
 ## Customization
 
-You can customize the animation by modifying the `CircularThemeRevealOverlay` source:
+### Current defaults:
+- **Duration**: 600ms
+- **Expansion curve**: `Curves.easeInOut`
+- **Contraction curve**: `Curves.easeInExpo` (more cinematic)
+- **Fade threshold**: Last 15% of radius
+- **Glow effect**: Last 10% of radius
 
-- **Duration**: Change `Duration(milliseconds: 600)` in the controller
-- **Curve**: Modify `Curves.easeInOut` to any curve you prefer
-- **Fade timing**: Adjust the `0.85` threshold in `CircularRevealPainter`
+### Custom themes support:
+The package works with **any theme colors** because it captures actual rendered pixels:
+
+```dart
+MaterialApp(
+  theme: ThemeData(
+    colorScheme: ColorScheme.fromSeed(
+      seedColor: Colors.purple,  // ✅ Your custom colors
+      brightness: Brightness.light,
+    ),
+  ),
+  darkTheme: ThemeData(
+    colorScheme: ColorScheme.fromSeed(
+      seedColor: Colors.orange,  // ✅ Your custom dark colors
+      brightness: Brightness.dark,
+    ),
+  ),
+  // ... rest of setup
+)
+```
 
 ## Performance Tips
 
