@@ -174,7 +174,7 @@ class CircularThemeRevealOverlayState extends State<CircularThemeRevealOverlay> 
       await Future.delayed(const Duration(milliseconds: 20));
 
       final RenderRepaintBoundary? boundary = _repaintKey.currentContext?.findRenderObject() as RenderRepaintBoundary?;
-      if (boundary == null || !boundary.debugNeedsPaint == false) {
+      if (boundary == null) {
         return null;
       }
 
